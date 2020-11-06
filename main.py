@@ -86,13 +86,11 @@ def use_model(state_dict_file):
     img_data = img_data.view(-1, 1, IMG_SIZE, IMG_SIZE)
     img_data = img_data.to(device)
     result = cnn(img_data)
-    print(result)
     if(result[0][0] > result[0][1]):
         print(f"{path} is a cat ({round(float(result[0][0]*100), 2)}% confidence)")
     else:
         print(f"{path} is a dog ({round(float(result[0][1]*100), 2)}% confidence)")
 
-print (f"len(sys.argv) = {len(sys.argv)}")
 if len(sys.argv) > 2 and os.path.isfile(sys.argv[1]):
     with open(sys.argv[1], 'rb') as state_dict_file:
         bytes_io = io.BytesIO(state_dict_file.read())
