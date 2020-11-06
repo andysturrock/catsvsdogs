@@ -1,4 +1,4 @@
-import time
+import datetime
 
 from tqdm import tqdm
 
@@ -59,7 +59,8 @@ class CNN(nn.Module):
     # train_y is the input image classification in one-hot format: [1, 0] for cat, [0, 1] for dog
     # logfile should be already opened for append.  Can be a file, or STDIN etc.
     # Epoch is optional and can be used to show in the logfile how many times this function has been called.
-    def train(self, batch_size, train_X, train_y, logfile, epoch=1):
+    def train_model(self, batch_size, train_X, train_y, logfile, epoch=1):
+        self.train(True)
         for i in tqdm(range(0, len(train_X), batch_size)):
             batch_X = train_X[i:i + batch_size].view(-1, 1, self.img_size, self.img_size)
             batch_y = train_y[i:i + batch_size]
@@ -75,13 +76,16 @@ class CNN(nn.Module):
             matches = [torch.argmax(i) == torch.argmax(j) for i, j in zip(outputs, batch_y)]
             accuracy = matches.count(True)/len(matches)
 
-            logfile.write(f"{int(time.time())},{epoch},in_sample,{round(float(accuracy),2)},{round(float(loss),4)}\n")
+            now = datetime.datetime.now()
+            nowStr = now.strftime("%Y-%m-%d %H:%M:%S.%f")
+            logfile.write(f"{nowStr},{epoch},in_sample,{round(float(accuracy),2)},{round(float(loss),4)}\n")
     
     # Test the model.
     # train_X is the input images
     # train_y is the input image classification in one-hot format: [1, 0] for cat, [0, 1] for dog
     # This data should be "out of sample" (ie not the same images used in training)
-    def test(self, test_X, test_y):
+    def test_model(self, test_X, test_y):
+        self.eval()
         correct = 0
         total = 0
         with torch.no_grad():
@@ -93,4 +97,4 @@ class CNN(nn.Module):
                 if predicted_class == real_class:
                     correct += 1
                 total += 1
-        print("Accuracy:", round(correct/total,3))
+        return round(correct/total,3)
