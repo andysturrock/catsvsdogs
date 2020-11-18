@@ -4,13 +4,8 @@ import datetime
 import os.path
 
 import cv2
-import numpy as np
 import torch
-import torch.nn as nn
-import torch.nn.functional as F
-import torch.optim as optim
 from cnn import CNN
-import matplotlib.pyplot as plt
 
 from model_data import ModelData
 
