@@ -22,7 +22,8 @@ class CNN(nn.Module):
 
         # We need to work out the shape of the input features for the first Linear layer
         # So stick some random data through the convolutional layers and use that to calculate it.
-        x = torch.randn(self.img_size, self.img_size).view(-1, 1, self.img_size, self.img_size)
+        x = torch.randn(self.img_size, self.img_size).\
+            view(-1, 1, self.img_size, self.img_size)
         self._to_linear = None
         self.convs(x)
 
@@ -38,9 +39,9 @@ class CNN(nn.Module):
 
     # Run the convolutional layers
     def convs(self, x):
-        x = F.max_pool2d(F.relu(self.conv1(x)), (2,2))
-        x = F.max_pool2d(F.relu(self.conv2(x)), (2,2))
-        x = F.max_pool2d(F.relu(self.conv3(x)), (2,2))
+        x = F.max_pool2d(F.relu(self.conv1(x)), (2, 2))
+        x = F.max_pool2d(F.relu(self.conv2(x)), (2, 2))
+        x = F.max_pool2d(F.relu(self.conv3(x)), (2, 2))
 
         if self._to_linear is None:
             self._to_linear = x[0].shape[0] * x[0].shape[1] * x[0].shape[2]
@@ -62,7 +63,8 @@ class CNN(nn.Module):
     def train_model(self, batch_size, train_X, train_y, logfile, epoch=1):
         self.train(True)
         for i in tqdm(range(0, len(train_X), batch_size)):
-            batch_X = train_X[i:i + batch_size].view(-1, 1, self.img_size, self.img_size)
+            batch_X = train_X[i:i + batch_size].\
+                view(-1, 1, self.img_size, self.img_size)
             batch_y = train_y[i:i + batch_size]
 
             batch_X, batch_y = batch_X.to(self.device), batch_y.to(self.device)
@@ -73,12 +75,16 @@ class CNN(nn.Module):
             loss.backward()
             self.optimizer.step()
 
-            matches = [torch.argmax(i) == torch.argmax(j) for i, j in zip(outputs, batch_y)]
+            matches = [
+                torch.argmax(i) == torch.argmax(j) for i, j in zip(outputs, batch_y)
+            ]
             accuracy = matches.count(True)/len(matches)
 
             now = datetime.datetime.now()
             nowStr = now.strftime("%Y-%m-%d %H:%M:%S.%f")
-            logfile.write(f"{nowStr},{epoch},in_sample,{round(float(accuracy),2)},{round(float(loss),4)}\n")
+            logfile.write(
+                f"{nowStr},{epoch},in_sample,{round(float(accuracy),2)},{round(float(loss),4)}\n"
+            )
     
     # Test the model.
     # train_X is the input images
@@ -91,10 +97,11 @@ class CNN(nn.Module):
         with torch.no_grad():
             for i in range(len(test_X)):
                 real_class = torch.argmax(test_y[i]).to(self.device)
-                net_out = self(test_X[i].view(-1, 1, self.img_size, self.img_size).to(self.device))[0]
+                net_out = self(test_X[i].\
+                    view(-1, 1, self.img_size, self.img_size).to(self.device))[0]
 
                 predicted_class = torch.argmax(net_out)
                 if predicted_class == real_class:
                     correct += 1
                 total += 1
-        return round(correct/total,3)
+        return round(correct / total,3)
