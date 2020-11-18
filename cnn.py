@@ -1,11 +1,11 @@
 import datetime
 
-from tqdm import tqdm
-
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
+from tqdm import tqdm
+
 
 class CNN(nn.Module):
     def __init__(self, img_size, kernel_size, device):

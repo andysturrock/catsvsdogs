@@ -5,6 +5,7 @@ import cv2
 import numpy as np
 from tqdm import tqdm
 
+
 class ModelData():
     CATS = "PetImages/Cat"
     DOGS = "PetImages/Dog"

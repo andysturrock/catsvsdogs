@@ -9,6 +9,7 @@ from cnn import CNN
 
 from model_data import ModelData
 
+
 # Hold these as constants for now.
 # Maybe make them command line params etc later.
 IMG_SIZE = 50
@@ -51,7 +52,7 @@ def train_model():
     MODEL_NAME = f"model-{nowStr}"
     with open(f"{MODEL_NAME}.csv", "a") as logfile:
         # header row
-        logfile.write(f"timestamp,epoch,in_sample,accuracy,loss\n")
+        logfile.write("timestamp,epoch,in_sample,accuracy,loss\n")
         for epoch in range(EPOCHS):
             cnn.train_model(BATCH_SIZE, training_images, training_classifications, logfile, epoch)
             accuracy = cnn.test_model(testing_images, testing_classifications)
@@ -61,6 +62,7 @@ def train_model():
     torch.save(cnn.state_dict(), f"{MODEL_NAME}.pt")
     print("Done.")
 
+
 def use_model(state_dict_file):
     print("Creating neural net...")
     cnn = CNN(IMG_SIZE, KERNEL_SIZE, device)
@@ -69,10 +71,10 @@ def use_model(state_dict_file):
 
     path = sys.argv[2]
     if not os.path.isfile(path):
-        raise Exception(f"File {path} does not exist") 
+        raise Exception(f"File {path} does not exist")
     img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
     if img is None:
-        raise Exception(f"Cannot load file {path}") 
+        raise Exception(f"Cannot load file {path}")
     img = cv2.resize(img, (IMG_SIZE, IMG_SIZE))
 
     img_data = torch.Tensor(img).view(-1, IMG_SIZE, IMG_SIZE)
