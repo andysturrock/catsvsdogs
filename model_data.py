@@ -76,4 +76,3 @@ class ModelData:
         if len(self.testing_data) == 0:
             self.testing_data = np.load(self.TESTING_DATAFILE, allow_pickle=True)
         return self.testing_data
-            
