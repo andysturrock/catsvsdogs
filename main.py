@@ -1,7 +1,7 @@
-import io
-import sys
 import datetime
+import io
 import os.path
+import sys
 
 import cv2
 import torch
