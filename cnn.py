@@ -64,10 +64,10 @@ class CNN(nn.Module):
     def train_model(self, batch_size, train_X, train_y, logfile, epoch=1):
         self.train(True)
         for i in tqdm(range(0, len(train_X), batch_size)):
-            batch_X = train_X[i : i + batch_size].view(
+            batch_X = train_X[i: i + batch_size].view(
                 -1, 1, self.img_size, self.img_size
             )
-            batch_y = train_y[i : i + batch_size]
+            batch_y = train_y[i: i + batch_size]
 
             batch_X, batch_y = batch_X.to(self.device), batch_y.to(self.device)
 
