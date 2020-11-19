@@ -6,9 +6,7 @@ import sys
 import cv2
 import torch
 from cnn import CNN
-
 from model_data import ModelData
-
 
 # Hold these as constants for now.
 # Maybe make them command line params etc later.

@@ -6,7 +6,7 @@ import numpy as np
 from tqdm import tqdm
 
 
-class ModelData():
+class ModelData:
     CATS = "PetImages/Cat"
     DOGS = "PetImages/Dog"
     # TESTING = "PetImages/Testing"
@@ -22,8 +22,9 @@ class ModelData():
 
     def __init__(self, img_size):
         # If both training and testing files exist already then just exit
-        if os.path.isfile(self.TRAINING_DATAFILE) and \
-            os.path.isfile(self.TESTING_DATAFILE):
+        if os.path.isfile(self.TRAINING_DATAFILE) and os.path.isfile(
+            self.TESTING_DATAFILE
+        ):
             return
 
         # Use a "one-hot" tensor for the classification
@@ -58,7 +59,6 @@ class ModelData():
                         elif label == self.DOGS:
                             self.training_dogcount += 1
 
-    
         np.random.shuffle(self.training_data)
         np.save(self.TRAINING_DATAFILE, self.training_data)
         np.save(self.TESTING_DATAFILE, self.testing_data)
@@ -67,13 +67,11 @@ class ModelData():
         print("Testing Cats:", self.testing_catcount)
         print("Testing Dogs:", self.testing_dogcount)
 
-
     def get_training_data(self):
         if len(self.training_data) == 0:
             self.training_data = np.load(self.TRAINING_DATAFILE, allow_pickle=True)
         return self.training_data
 
-    
     def get_testing_data(self):
         if len(self.testing_data) == 0:
             self.testing_data = np.load(self.TESTING_DATAFILE, allow_pickle=True)
