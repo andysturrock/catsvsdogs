@@ -1,3 +1,3 @@
 # catsvsdogs
 
-Inspired by https://pythonprogramming.net/machine-learning-tutorials/
+Inspired by [[https://pythonprogramming.net/machine-learning-tutorials/]]
