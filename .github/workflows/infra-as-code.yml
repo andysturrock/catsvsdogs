@@ -39,6 +39,7 @@ jobs:
         name: S3Stack
         template: cloudformation/S3-stack.yml
         parameter-overrides: "EnvironmentName=${{ github.event.inputs.envname }}"
+        no-fail-on-empty-changeset: true
     
     - name: Upload Cloudformation Templates to S3 bucket
       run: |
