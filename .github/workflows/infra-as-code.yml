@@ -33,9 +33,26 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: eu-west-2
 
-    - name: Deploy to AWS CloudFormation
+    - name: Create initial S3 buckets
       uses: aws-actions/aws-cloudformation-github-deploy@v1
       with:
         name: S3Stack
-        template: cloudformation/S3.yml
+        template: cloudformation/S3-stack.yml
         parameter-overrides: "EnvironmentName=${{ github.event.inputs.envname }}"
+    
+    - name: Upload Cloudformation Templates to S3 bucket
+      run: |
+        aws s3 sync cloudformation s3://catsvsdogs-${{ github.event.inputs.envname }}"
+
+    
+    - name: Create API gateway stack
+      uses: aws-actions/aws-cloudformation-github-deploy@v1
+      with:
+        name: APIGatewayStack
+        template: cloudformation/APIGateway-stack.yml
+        parameter-overrides: "file://${{ github.workspace }}/cloudformation/variables-${{ github.event.inputs.envname }}.json"
+        
+        "DomainName=${{ secrets.DOMAINNAME }} \
+          HostedZoneId=${{ secrets.AWS_HOSTED_ZONE_ID }} \
+          APICertValidationCNAMEName=${{ secrets.AWS_APICERTVALIDATIONCNAMENAME }} \
+          APICertValidationCNAMEValue=${{ secrets.AWS_APICERTVALIDATIONCNAMEVALUE }}"

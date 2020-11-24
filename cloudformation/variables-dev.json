@@ -1,0 +1,8 @@
+[
+    {
+      "DomainName": "dev.goatsinlace.com",
+      "HostedZoneId": "Z10462293U5NB4KI3LCIW",
+      "APICertValidationCNAMEName": "APICertValidationCNAMEName-dev",
+      "APICertValidationCNAMEValue": "APICertValidationCNAMEValue-dev"
+    }
+]
