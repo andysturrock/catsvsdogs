@@ -18,13 +18,13 @@ jobs:
     - name: Deploying to ${{ github.event.inputs.name }}
       run: echo "EnvironmentName=${{ github.event.inputs.name }}"
 
+    - name: Checkout
+      uses: actions/checkout@v2
+
     - name: pwd and ls
       run: |
         pwd
         ls -lrtR
-
-    - name: Checkout
-      uses: actions/checkout@v2
 
     - name: Configure AWS credentials from Test account
       uses: aws-actions/configure-aws-credentials@v1
