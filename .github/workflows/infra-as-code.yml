@@ -15,8 +15,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Deploying to ${{ github.event.inputs.name }}
-      run: echo "EnvironmentName=${{ github.event.inputs.name }}"
+    - name: Deploying to ${{ github.event.inputs.envname }}
+      run: echo "EnvironmentName=${{ github.event.inputs.envname }}"
 
     - name: Checkout
       uses: actions/checkout@v2
@@ -38,4 +38,4 @@ jobs:
       with:
         name: S3Stack
         template: cloudformation/S3.yaml
-        parameter-overrides: "EnvironmentName=${{ github.event.inputs.name }}"
+        parameter-overrides: "EnvironmentName=${{ github.event.inputs.envname }}"
