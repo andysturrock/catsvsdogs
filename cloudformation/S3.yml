@@ -10,7 +10,7 @@ Resources:
   CatsVsDogsS3Bucket:
     Type: 'AWS::S3::Bucket'
     Properties:
-      BucketName: !Sub "-catsvsdogs-${EnvironmentName}"
+      BucketName: !Sub "catsvsdogs-${EnvironmentName}"
       BucketEncryption: 
         ServerSideEncryptionConfiguration: 
         - ServerSideEncryptionByDefault: 
