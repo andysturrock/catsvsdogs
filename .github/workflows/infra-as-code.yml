@@ -43,7 +43,7 @@ jobs:
     
     - name: Upload Cloudformation Templates to S3 bucket
       run: |
-        aws s3 sync cloudformation s3://catsvsdogs-${{ github.event.inputs.envname }}"
+        aws s3 sync cloudformation s3://catsvsdogs-${{ github.event.inputs.envname }}
 
     
     - name: Create API gateway stack
