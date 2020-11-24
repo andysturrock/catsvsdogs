@@ -1,0 +1,17 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Create an S3 bucket to store CloudFormation templates, lambda code and trained model state
+
+Parameters:
+  EnvironmentName:
+    Description: Suffix for the environment (eg dev).
+    Type: String
+
+Resources: 
+  CatsVsDogsS3Bucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: !Sub "-catsvsdogs-${EnvironmentName}"
+      BucketEncryption: 
+        ServerSideEncryptionConfiguration: 
+        - ServerSideEncryptionByDefault: 
+            SSEAlgorithm: AES256
