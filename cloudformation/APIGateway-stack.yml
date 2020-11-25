@@ -88,7 +88,5 @@ Outputs:
   CustomDomainNameId:
     Description: Custom Domain Name ID
     Value: !Ref CustomDomainName
-  WWWCustomDomainNameId:
-    Description: WWW Custom Domain Name ID
-    Value: !Ref WWWCustomDomainName
+
   
