@@ -1,7 +1,7 @@
 [
     {
       "ParameterKey": "DomainName",
-      "ParameterValue": "dev.goatsinlace.com"
+      "ParameterValue": "catsvsdogs-dev.goatsinlace.com"
     },
     {
       "ParameterKey": "HostedZoneId",
