@@ -15,16 +15,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Deploying to ${{ github.event.inputs.envname }} ...
-      run: echo "EnvironmentName=${{ github.event.inputs.envname }}"
-
+      # Deploy jobs don't have copy of the source by default, so check it out
     - name: Checkout
       uses: actions/checkout@v2
-
-    - name: pwd and ls
-      run: |
-        pwd
-        ls -lrtR
 
     - name: Configure AWS credentials from Test account
       uses: aws-actions/configure-aws-credentials@v1
