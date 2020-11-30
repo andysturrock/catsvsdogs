@@ -50,11 +50,7 @@ jobs:
       with:
         name: APIGatewayStack
         template: cloudformation/APIGateway-stack.yml
-        parameter-overrides: >-
-          DomainName=dev.goatsinlace.com,
-          HostedZoneId=Z10462293U5NB4KI3LCIW,
-          APICertValidationCNAMEName=APICertValidationCNAMEName-dev,
-          APICertValidationCNAMEValue=APICertValidationCNAMEValue-dev
-          
-# "file://${{ github.workspace }}/cloudformation/variables-${{ github.event.inputs.envname }}.json"
+        parameter-overrides: "file://${{ github.workspace }}/cloudformation/variables-${{ github.event.inputs.envname }}.json"
+
+
 

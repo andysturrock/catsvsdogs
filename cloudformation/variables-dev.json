@@ -1,8 +1,8 @@
 [
     {
       "DomainName": "dev.goatsinlace.com",
-      "HostedZoneId": "Z10462293U5NB4KI3LCIW",
-      "APICertValidationCNAMEName": "APICertValidationCNAMEName-dev",
-      "APICertValidationCNAMEValue": "APICertValidationCNAMEValue-dev"
+      "HostedZoneId": "Z00982821JRF82YXP10NB",
+      "APICertValidationCNAMEName": "_1f4f5f3011f691c88d4af95b2e67e795.api.catsvsdogs-dev.goatsinlace.com",
+      "APICertValidationCNAMEValue": "_915b71f9a7f828ea408426970c055535.wggjkglgrm.acm-validations.aws"
     }
 ]
