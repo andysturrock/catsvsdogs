@@ -11,7 +11,7 @@ on:
 
 jobs:
   deploy:
-    name: Run cloudformation to create Amazon S3 bucket
+    name: Deploy ${{ github.event.inputs.envname }} infra-as-code
     runs-on: ubuntu-latest
 
     steps:
