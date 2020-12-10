@@ -7,10 +7,19 @@ Parameters:
     Type: String
 
 Resources: 
-  CatsVsDogsS3Bucket:
+  CatsVsDogsLambdaCodeS3Bucket:
     Type: 'AWS::S3::Bucket'
     Properties:
-      BucketName: !Sub "catsvsdogs-${EnvironmentName}"
+      BucketName: !Sub "catsvsdogs-lambdacode-${EnvironmentName}"
+      BucketEncryption: 
+        ServerSideEncryptionConfiguration: 
+        - ServerSideEncryptionByDefault: 
+            SSEAlgorithm: AES256
+  
+  CatsVsDogsModelStateS3Bucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: !Sub "catsvsdogs-modelstate-${EnvironmentName}"
       BucketEncryption: 
         ServerSideEncryptionConfiguration: 
         - ServerSideEncryptionByDefault: 

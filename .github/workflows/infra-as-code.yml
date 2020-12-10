@@ -34,9 +34,9 @@ jobs:
         parameter-overrides: "EnvironmentName=${{ github.event.inputs.envname }}"
         no-fail-on-empty-changeset: "1"
     
-    - name: Upload Cloudformation Templates to S3 bucket
+    - name: Upload Lambda code to S3 bucket
       run: |
-        aws s3 sync cloudformation s3://catsvsdogs-${{ github.event.inputs.envname }}
+        aws s3 sync cloudformation s3://catsvsdogs-lambdacode-${{ github.event.inputs.envname }}
 
     - name: Create API gateway stack
       uses: aws-actions/aws-cloudformation-github-deploy@v1
