@@ -15,15 +15,7 @@ KERNEL_SIZE = 5
 BATCH_SIZE = 100
 EPOCHS = 5
 
-if torch.cuda.is_available():
-    device = torch.device("cuda:0")
-    print("Running on the GPU")
-else:
-    device = torch.device("cpu")
-    print("Running on the CPU")
-
-
-def train_model():
+def train_model(device):
     print("Loading training and test data...")
     model_data = ModelData(IMG_SIZE)
     training_data = model_data.get_training_data()
@@ -68,7 +60,7 @@ def train_model():
     print("Done.")
 
 
-def use_model(state_dict_file):
+def use_model(state_dict_file, device):
     print("Creating neural net...")
     cnn = CNN(IMG_SIZE, KERNEL_SIZE, device)
     cnn.load_state_dict(torch.load(state_dict_file))
@@ -93,10 +85,19 @@ def use_model(state_dict_file):
     else:
         print(f"{path} is a dog ({round(float(result[0][1]*100), 2)}% confidence)")
 
+def main():
+    if torch.cuda.is_available():
+        device = torch.device("cuda:0")
+        print("Running on the GPU")
+    else:
+        device = torch.device("cpu")
+        print("Running on the CPU")
 
-if len(sys.argv) > 2 and os.path.isfile(sys.argv[1]):
-    with open(sys.argv[1], "rb") as state_dict_file:
-        bytes_io = io.BytesIO(state_dict_file.read())
-        use_model(bytes_io)
-else:
-    train_model()
+    if len(sys.argv) > 2 and os.path.isfile(sys.argv[1]):
+        with open(sys.argv[1], "rb") as state_dict_file:
+            bytes_io = io.BytesIO(state_dict_file.read())
+            use_model(bytes_io, device)
+    else:
+        train_model(device)
+
+main()
