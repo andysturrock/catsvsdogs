@@ -60,18 +60,17 @@ def train_model(device):
     print("Done.")
 
 
-def use_model(state_dict_file, device):
+def use_model(state_dict_file, image_file, device):
     print("Creating neural net...")
     cnn = CNN(IMG_SIZE, KERNEL_SIZE, device)
     cnn.load_state_dict(torch.load(state_dict_file))
     cnn.eval()
 
-    path = sys.argv[2]
-    if not os.path.isfile(path):
-        raise Exception(f"File {path} does not exist")
-    img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
+    if not os.path.isfile(image_file):
+        raise Exception(f"File {image_file} does not exist")
+    img = cv2.imread(image_file, cv2.IMREAD_GRAYSCALE)
     if img is None:
-        raise Exception(f"Cannot load file {path}")
+        raise Exception(f"Cannot load file {image_file}")
     img = cv2.resize(img, (IMG_SIZE, IMG_SIZE))
 
     img_data = torch.Tensor(img).view(-1, IMG_SIZE, IMG_SIZE)
@@ -81,9 +80,9 @@ def use_model(state_dict_file, device):
     img_data = img_data.to(device)
     result = cnn(img_data)
     if result[0][0] > result[0][1]:
-        print(f"{path} is a cat ({round(float(result[0][0]*100), 2)}% confidence)")
+        print(f"{image_file} is a cat ({round(float(result[0][0]*100), 2)}% confidence)")
     else:
-        print(f"{path} is a dog ({round(float(result[0][1]*100), 2)}% confidence)")
+        print(f"{image_file} is a dog ({round(float(result[0][1]*100), 2)}% confidence)")
 
 def main():
     if torch.cuda.is_available():
@@ -96,8 +95,6 @@ def main():
     if len(sys.argv) > 2 and os.path.isfile(sys.argv[1]):
         with open(sys.argv[1], "rb") as state_dict_file:
             bytes_io = io.BytesIO(state_dict_file.read())
-            use_model(bytes_io, device)
+            use_model(bytes_io, sys.argv[2], device)
     else:
         train_model(device)
-
-main()
