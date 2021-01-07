@@ -98,3 +98,6 @@ def main():
             use_model(bytes_io, sys.argv[2], device)
     else:
         train_model(device)
+
+if __name__ == '__main__':
+    main()
