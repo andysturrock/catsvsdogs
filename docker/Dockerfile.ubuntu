@@ -1,0 +1,48 @@
+# Dockerfile based on https://docs.aws.amazon.com/lambda/latest/dg/images-create.html#images-create-2
+
+# Define function directory
+ARG FUNCTION_DIR="/var/task"
+
+FROM python:buster as build-image
+
+ARG FUNCTION_DIR
+RUN mkdir -p ${FUNCTION_DIR}
+
+# Install the python code for the CNN
+COPY python/model_lambda.py ${FUNCTION_DIR}
+COPY python/main.py ${FUNCTION_DIR}
+COPY python/cnn.py ${FUNCTION_DIR}
+COPY python/model_data.py ${FUNCTION_DIR}
+
+# Install all the python dependencies
+#RUN yum -y install mesa-libGL
+#RUN apt-get install libgl1-mesa-glx
+RUN pip install --upgrade pip
+RUN pip install torch==1.7.1+cpu torchvision==0.8.2+cpu torchaudio==0.7.2 -f https://download.pytorch.org/whl/torch_stable.html
+RUN pip install opencv-python
+RUN pip install tqdm
+
+# Install the model state
+COPY docker/model-2021-01-06_16.57.31.pt ${FUNCTION_DIR}
+# Test image
+COPY docker/10017.jpg ${FUNCTION_DIR}
+
+# Add the AWS Runtime Inteface Emulator which enables us to run the container locally
+ADD https://github.com/aws/aws-lambda-runtime-interface-emulator/releases/latest/download/aws-lambda-rie /usr/local/bin/aws-lambda-rie
+RUN chmod +x /usr/local/bin/aws-lambda-rie
+
+# Install the AWS Runtime Inteface Client.  This provides the input and output to the custom image.
+RUN pip install --target ${FUNCTION_DIR} awslambdaric
+
+# Custom entry point script which switches between local and lambda execution mode.
+# Hardcoded location because the exec form of ENTRYPOINT below can't use a variable.
+RUN mkdir -p /var/task
+COPY docker/entry_script.sh /var/task/entry_script.sh
+RUN chmod +x /var/task/entry_script.sh
+
+# Set working directory to function root directory
+WORKDIR ${FUNCTION_DIR}
+
+# And use our custom script as the entry point
+ENTRYPOINT ["/var/task/entry_script.sh"]
+CMD ["model_lambda.lambda_handler"]

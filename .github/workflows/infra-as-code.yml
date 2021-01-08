@@ -3,13 +3,19 @@ name: infra-as-code
 # Manually triggered
 on:
   workflow_dispatch:
+    inputs:
+        envname:
+          description: 'Environment (one of "dev" or "prod")'
+          required: true
+          default: 'dev'
 
 jobs:
   deploy:
-    name: Upload to Amazon S3
+    name: Deploy ${{ github.event.inputs.envname }} infra-as-code
     runs-on: ubuntu-latest
 
     steps:
+      # Deploy jobs don't have copy of the source by default, so check it out
     - name: Checkout
       uses: actions/checkout@v2
 
@@ -18,8 +24,26 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-east-1
+        aws-region: eu-west-2
 
-    - name: Copy files to the test website with the AWS CLI
+    - name: Create initial S3 buckets
+      uses: aws-actions/aws-cloudformation-github-deploy@v1
+      with:
+        name: S3Stack
+        template: cloudformation/S3-stack.yml
+        parameter-overrides: "EnvironmentName=${{ github.event.inputs.envname }}"
+        no-fail-on-empty-changeset: "1"
+    
+    - name: Upload Lambda code to S3 bucket
       run: |
-        aws s3 sync
+        aws s3 sync cloudformation s3://catsvsdogs-lambdacode-${{ github.event.inputs.envname }}
+
+    - name: Create API gateway stack
+      uses: aws-actions/aws-cloudformation-github-deploy@v1
+      with:
+        name: APIGatewayStack
+        template: cloudformation/APIGateway-stack.yml
+        parameter-overrides: "file://${{ github.workspace }}/cloudformation/variables-${{ github.event.inputs.envname }}.json"
+
+
+

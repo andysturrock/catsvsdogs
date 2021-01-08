@@ -1,0 +1,92 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Create an API Gateway, some methods and some lambdas to process the requests
+
+Parameters:
+  DomainName:
+    Description: The domain name to use for the API URls eg myapp-dev.mydomain.com
+    Type: String
+  HostedZoneId:
+    Description: The hosted zone ID that hosts the domain name eg Z001564425G92M7EF9EB1
+    Type: String
+  APICertValidationCNAMEName:
+    Description: The CNAME name for DNS Validation of the https cert for the API Gateway
+    Type: String
+  APICertValidationCNAMEValue:
+    Description: The CNAME value for DNS Validation of the https cert for the API Gateway
+    Type: String
+
+Resources:
+
+  ApiGatewayRestApi:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      ApiKeySourceType: HEADER
+      Description: Cats vs Dogs image classification
+      EndpointConfiguration:
+        Types:
+          - REGIONAL
+      Name: dogs-vs-cats
+
+  ApiGatewayModel:
+    Type: AWS::ApiGateway::Model
+    Properties:
+      ContentType: 'application/json'
+      RestApiId: !Ref ApiGatewayRestApi
+      Schema: {}
+
+  # Add in the DNS validation record.  This doesn't seem to be random, so OK to
+  # pass as a parameter above.
+  DNSValidationRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref HostedZoneId
+      Name: !Join ['.', [!Ref APICertValidationCNAMEName, 'api', !Ref DomainName]]
+      Type: CNAME
+      TTL: '300'
+      ResourceRecords:
+      - !Ref APICertValidationCNAMEValue
+
+  Certificate:
+    Type: AWS::CertificateManager::Certificate
+    Properties: 
+      DomainName: !Join ['.', ['api', !Ref DomainName]]
+      ValidationMethod: 'DNS'
+      DomainValidationOptions:
+        - DomainName: !Ref DomainName
+          HostedZoneId: !Ref HostedZoneId
+
+  CustomDomainName:
+    Type: AWS::ApiGateway::DomainName
+    Properties:
+      DomainName: !Join ['.', ['api', !Ref DomainName]]
+      EndpointConfiguration: 
+        Types: 
+          - REGIONAL
+      RegionalCertificateArn: !Ref Certificate
+      SecurityPolicy: 'TLS_1_2'
+
+  CustomDomainDNSARecord:
+    Type: AWS::Route53::RecordSetGroup
+    Properties:
+      Comment: DNS record pointing custom domain name to API Gateway
+      HostedZoneId: !Ref HostedZoneId
+      RecordSets:
+      - Name: !Join ['.', ['api', !Ref DomainName]]
+        Type: A
+        AliasTarget:
+          HostedZoneId: !GetAtt CustomDomainName.RegionalHostedZoneId
+          DNSName: !GetAtt CustomDomainName.RegionalDomainName
+          EvaluateTargetHealth: true
+
+Outputs:
+  ApiGatewayRestApiId:
+    Description: API Gateway ID
+    Value: !Ref ApiGatewayRestApi
+  ApiGatewayRestApiRootResourceId:
+    Description: API Gateway Root Resource ID
+    Value: !GetAtt ApiGatewayRestApi.RootResourceId
+  CustomDomainNameId:
+    Description: Custom Domain Name ID
+    Value: !Ref CustomDomainName
+
+  

@@ -1,0 +1,18 @@
+[
+    {
+      "ParameterKey": "DomainName",
+      "ParameterValue": "catsvsdogs-dev.goatsinlace.com"
+    },
+    {
+      "ParameterKey": "HostedZoneId",
+      "ParameterValue": "Z00982821JRF82YXP10NB"
+    },
+    {
+      "ParameterKey": "APICertValidationCNAMEName",
+      "ParameterValue": "_1f4f5f3011f691c88d4af95b2e67e795"
+    },
+    {
+      "ParameterKey": "APICertValidationCNAMEValue",
+      "ParameterValue": "_915b71f9a7f828ea408426970c055535.wggjkglgrm.acm-validations.aws"
+    }
+]
