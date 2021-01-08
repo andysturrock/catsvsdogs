@@ -1,5 +1,8 @@
 FROM public.ecr.aws/lambda/python:3.8
 
+# This container needs at least 256MB memory, so need to change the default
+# settings on the lambda.
+
 ARG FUNCTION_DIR="/var/task"
 RUN mkdir -p ${FUNCTION_DIR}
 
