@@ -1,3 +1,4 @@
+import * as path from "path";
 import * as core from "@aws-cdk/core";
 import * as apigateway from "@aws-cdk/aws-apigateway";
 import * as lambda from "@aws-cdk/aws-lambda";
@@ -5,6 +6,8 @@ import * as s3 from "@aws-cdk/aws-s3";
 import * as route53 from '@aws-cdk/aws-route53';
 import * as targets from '@aws-cdk/aws-route53-targets';
 import * as acm from '@aws-cdk/aws-certificatemanager';
+import * as ecr from '@aws-cdk/aws-ecr';
+import { Duration } from "@aws-cdk/core";
 
 
 const customDomainName='catsvsdogs-dev.goatsinlace.com';
@@ -22,18 +25,21 @@ export class CatsVsDogsService extends core.Construct {
     // Get hold of the default VPC
     // const vpc = ec2.Vpc.fromLookup(this, 'DefaultVPC', {isDefault: true});
 
-    const model_handler = new lambda.Function(this, 'ModelHandler', {
-      runtime: lambda.Runtime.PYTHON_3_8,
-      handler: "model_lambda.lambda_handler",
-      code: lambda.Code.fromAsset('../python'),
-      // vpc: vpc,
-      // allowPublicSubnet: true,
+    const dockerfile = path.join(__dirname, "../docker");
+
+    // Get the docker repo holding the container images
+    const dockerRepo = ecr.Repository.fromRepositoryName(this, 'DockerRepo', 'cats-vs-dogs-model');
+    // Create AWS Lambda function afrom ECR image
+    const model_handler = new lambda.DockerImageFunction(this, "ModelHandler", {
+      code: lambda.DockerImageCode.fromEcr(dockerRepo, {tag: "latest"}),
       environment: {
         BUCKETNAME: bucket.bucketName
-      }
+      },
+      memorySize: 256,
+      timeout: Duration.seconds(15)
     });
 
-    // The lambda needs to get the trained model from the bucket
+    // The lambda needs access to the S3 bucket
     bucket.grantReadWrite(model_handler);
 
     // Get hold of the hosted zone which has previously been created
