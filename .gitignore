@@ -132,7 +132,7 @@ dmypy.json
 .pyre/
 
 # Stuff for CDK
-*.js
+cdk/*.js
 !jest.config.js
 *.d.ts
 node_modules
