@@ -1,0 +1,32 @@
+.u-align-center {
+  text-align: center;
+}
+
+.u-clearfix:after,
+.u-clearfix:before {
+  content: '';
+  display: table;
+}
+.u-clearfix:after {
+  clear: both;
+}
+
+.u-footer {
+  background-image: none;
+}
+
+.u-grey-80{
+  color: #ffffff;
+  background-color: #333333;
+}
+
+.u-sheet {
+  position: relative;
+  width: 1140px;
+  margin: 0 auto;
+}
+
+.u-text {
+  word-wrap: break-word;
+  position: relative;
+}
